@@ -1,0 +1,5 @@
+Business Rules:
+1. Minimum order value for payment = ₹1.
+2. Name must contain only alphabets.
+3. Email field must not be empty.
+4. Users can only use one discount code per order.
