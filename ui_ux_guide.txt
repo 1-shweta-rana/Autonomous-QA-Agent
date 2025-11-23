@@ -1,0 +1,6 @@
+UI/UX Guidelines:
+- Form validation errors must be in red color.
+- The Pay Now button must be green.
+- Required fields: Name, Email, Address.
+- Email must be validated using correct email format.
+- Invalid inputs should show inline error messages.
