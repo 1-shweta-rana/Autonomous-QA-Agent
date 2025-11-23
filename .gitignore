@@ -1,0 +1,39 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.sqlite3
+
+# Virtual environments
+venv/
+.env/
+.env.*/
+.venv/
+*.env
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+logs/
+tmp/
+temp/
+
+# Data / vector DB / cache (can be large or private)
+vector_store/
+support_docs/
+
+# Selenium drivers (if you add them)
+chromedriver*
+geckodriver*
