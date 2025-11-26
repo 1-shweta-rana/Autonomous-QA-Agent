@@ -44,3 +44,31 @@ def debug_retrieve(req: QueryRequest):
     """
     ctx = retrieve_context(req.query, top_k=5)
     return {"contexts": ctx}
+
+
+@app.post("/chat")
+def chat(req: QueryRequest):
+    """
+    QA endpoint: uses RAG over the knowledge base.
+    We DON'T call a big LLM here; we return an extractive answer
+    using the retrieved chunks.
+    """
+    user_query = req.query
+
+    # 1️⃣ Retrieve relevant chunks from the KB
+    ctx = retrieve_context(user_query, top_k=5)
+
+    if not ctx:
+        answer = "I couldn't find relevant information in the uploaded documents."
+    else:
+        # Build a simple extractive-style answer by concatenating top chunks
+        combined = "\n\n".join(c.get("text", "") for c in ctx[:3])
+        answer = (
+            "Here is the most relevant information I found in the documents:\n\n"
+            f"{combined}"
+        )
+
+    return {
+        "response": answer,
+        "context": ctx,
+    }

@@ -24,7 +24,6 @@ st.set_page_config(page_title="Autonomous QA Agent", layout="wide")
 st.title("🧪 Autonomous QA Agent")
 st.markdown("### Phase 1 – Build Knowledge Base")
 
-
 # ------------ Upload docs ------------
 st.subheader("1️⃣ Upload Support Documents")
 support_files = st.file_uploader(
@@ -62,7 +61,7 @@ if st.button("💾 Save Files Locally"):
     if not saved_any:
         st.info("Upload at least one file and try again.")
 
-
+# ------------ Build KB ------------
 st.subheader("3️⃣ Build Knowledge Base")
 
 if st.button("🚀 Build Knowledge Base"):
@@ -82,3 +81,46 @@ if st.button("🚀 Build Knowledge Base"):
             st.error(f"Backend HTTP error: {resp.status_code}")
     except Exception as e:
         st.error(f"Could not reach backend: {e}")
+
+# ================== PHASE 2: CHAT / QA ==================
+
+st.markdown("---")
+st.markdown("### Phase 2 – Query the Knowledge Base")
+st.markdown("Use the built knowledge base to ask questions about the workflow, rules, APIs, and UI.")
+
+user_query = st.text_input(
+    "💬 Ask a question based on the uploaded documents:",
+    placeholder="Example: What are the main validation rules in the checkout flow?",
+)
+
+if st.button("❓ Ask"):
+    if not user_query.strip():
+        st.warning("Please type a question first.")
+    else:
+        with st.spinner("Thinking using the knowledge base..."):
+            try:
+                # Adjust payload shape if your /chat endpoint expects something else
+                resp = requests.post(
+                    f"{BASE_BACKEND_URL}/chat",
+                    json={"query": user_query},
+                )
+
+                if resp.status_code == 200:
+                    data = resp.json()
+                    answer = data.get("response", "")
+                    context = data.get("context", [])
+
+                    st.markdown("### ✅ Answer")
+                    st.write(answer)
+
+                    if context:
+                        st.markdown("### 🔍 Retrieved Context Chunks")
+                        for c in context:
+                            src = c.get("metadata", {}).get("source", "Unknown")
+                            st.write(f"**Source:** {src}")
+                            st.write(c.get("text", ""))
+                            st.markdown("---")
+                else:
+                    st.error(f"Backend HTTP error from /chat: {resp.status_code}")
+            except Exception as e:
+                st.error(f"Could not reach backend /chat: {e}")
