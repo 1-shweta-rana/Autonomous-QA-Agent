@@ -286,7 +286,8 @@ def generate_selenium_script(req: SeleniumScriptRequest):
 
     if gemini_key:
         try:
-            url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+            # Use current Gemini text model endpoint
+            url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
             res = requests.post(
                 url=f"{url}?key={gemini_key}",
                 json={"contents": [{"parts": [{"text": prompt}]}]},
@@ -298,11 +299,10 @@ def generate_selenium_script(req: SeleniumScriptRequest):
                 parts = data["candidates"][0]["content"]["parts"]
                 script_from_llm = "".join(p.get("text", "") for p in parts)
             else:
-                # Log but don't crash
                 print("Gemini API error:", res.status_code, res.text)
         except Exception as e:
-            # Log but don't crash
             print("Exception while calling Gemini:", e)
+
     else:
         print("GEMINI_API not set; using local fallback for Selenium generation.")
 
