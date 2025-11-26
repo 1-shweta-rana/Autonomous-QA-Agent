@@ -286,11 +286,20 @@ def generate_selenium_script(req: SeleniumScriptRequest):
 
     if gemini_key:
         try:
-            # Use current Gemini text model endpoint
-            url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
+            # Use current Gemini text model (2.5 Flash) via Generative Language API
+            url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+
             res = requests.post(
                 url=f"{url}?key={gemini_key}",
-                json={"contents": [{"parts": [{"text": prompt}]}]},
+                json={
+                    "contents": [
+                        {
+                            "parts": [
+                                {"text": prompt}
+                            ]
+                        }
+                    ]
+                },
                 timeout=60,
             )
 
